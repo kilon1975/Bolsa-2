@@ -2,6 +2,8 @@
 
 Bot de trading automatizado para Interactive Brokers con pipeline de briefing inteligente (Perplexity + Claude).
 
+> **v2** — Incluye Claude Code GitHub Actions para asistencia con `@claude` en issues y PRs.
+
 ## Arquitectura
 
 ```
