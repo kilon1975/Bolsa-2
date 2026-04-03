@@ -6,19 +6,14 @@ Consulta información actualizada del mercado bursátil vía Perplexity,
 luego genera un briefing ejecutivo estructurado con Claude.
 """
 
-import os
 import sys
 import json
 from datetime import datetime
 
 import requests
 import anthropic
-from dotenv import load_dotenv
 
-load_dotenv()
-
-PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+from config import PERPLEXITY_API_KEY, ANTHROPIC_API_KEY
 
 # ─── Paso 1: Consulta a Perplexity ──────────────────────────────────────────
 
@@ -99,8 +94,9 @@ Usa formato limpio con secciones y bullets. Sé conciso y directo."""
 
 def run(topic: str | None = None):
     if not PERPLEXITY_API_KEY or not ANTHROPIC_API_KEY:
-        print("Error: configura PERPLEXITY_API_KEY y ANTHROPIC_API_KEY en .env")
-        sys.exit(1)
+        msg = "Error: configura PERPLEXITY_API_KEY y ANTHROPIC_API_KEY en .env"
+        print(msg)
+        raise SystemExit(msg)
 
     if topic is None:
         topic = (
