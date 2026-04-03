@@ -94,8 +94,9 @@ Usa formato limpio con secciones y bullets. Sé conciso y directo."""
 
 def run(topic: str | None = None):
     if not PERPLEXITY_API_KEY or not ANTHROPIC_API_KEY:
-        print("Error: configura PERPLEXITY_API_KEY y ANTHROPIC_API_KEY en .env")
-        sys.exit(1)
+        msg = "Error: configura PERPLEXITY_API_KEY y ANTHROPIC_API_KEY en .env"
+        print(msg)
+        raise SystemExit(msg)
 
     if topic is None:
         topic = (

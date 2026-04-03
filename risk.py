@@ -27,7 +27,7 @@ class RiskManager:
                            quantity, MAX_POSITION_SIZE)
             return False
 
-        if abs(self.daily_pnl) >= MAX_DAILY_LOSS:
+        if self.daily_pnl <= -MAX_DAILY_LOSS:
             logger.warning("Rechazada: pérdida diaria %.2f >= límite %.2f",
                            abs(self.daily_pnl), MAX_DAILY_LOSS)
             return False
@@ -51,8 +51,8 @@ class RiskManager:
 
     def update_daily_pnl(self, pnl: float):
         self.daily_pnl = pnl
-        if abs(pnl) >= MAX_DAILY_LOSS:
-            logger.critical("ALERTA: pérdida diaria %.2f alcanzó el límite", pnl)
+        if pnl <= -MAX_DAILY_LOSS:
+            logger.critical("ALERTA: pérdida diaria %.2f alcanzó el límite", abs(pnl))
 
     def _get_nlv(self) -> float:
         try:

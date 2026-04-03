@@ -5,12 +5,13 @@ Bot de trading automatizado para Interactive Brokers con pipeline de briefing in
 ## Arquitectura
 
 ```
-bot.py              ← Punto de entrada principal (ciclo de trading)
-├── config.py       ← Configuración centralizada (.env)
-├── connection.py   ← Conexión a TWS / IB Gateway (ib_insync)
-├── strategy.py     ← Estrategia SMA crossover + RSI
-├── orders.py       ← Gestión de órdenes (market / limit)
-├── risk.py         ← Control de riesgo (posición, portafolio, stop-loss)
+main.py             ← Punto de entrada unificado
+├── bot.py          ← Ciclo de trading (conexión, evaluación, órdenes)
+│   ├── config.py       ← Configuración centralizada (.env)
+│   ├── connection.py   ← Conexión a TWS / IB Gateway (ib_insync)
+│   ├── strategy.py     ← Estrategia SMA crossover + RSI
+│   ├── orders.py       ← Gestión de órdenes (market / limit)
+│   └── risk.py         ← Control de riesgo (posición, portafolio, stop-loss)
 └── briefing.py     ← Pipeline Perplexity API → Claude API → briefing
 ```
 
@@ -31,21 +32,27 @@ cp .env.example .env
 ## Uso
 
 ```bash
-# Ejecutar bot en modo continuo (cada 5 minutos)
-python bot.py
+# ─── Bot de trading ──────────────────────────────────
+
+# Modo continuo (ciclo cada 5 minutos)
+python main.py bot
 
 # Un solo ciclo
-python bot.py --once
+python main.py bot --once
 
 # Con briefing de mercado al inicio
-python bot.py --briefing
+python main.py bot --briefing
 
 # Intervalo personalizado (60 segundos)
-python bot.py --interval 60
+python main.py bot --interval 60
 
-# Solo briefing (sin bot)
-python briefing.py
-python briefing.py "Análisis del sector tech"
+# ─── Briefing de mercado ─────────────────────────────
+
+# Briefing general (índices, noticias, factores macro)
+python main.py briefing
+
+# Briefing con tema personalizado
+python main.py briefing "Análisis del sector tech y semiconductores"
 ```
 
 ## Configuración (.env)
@@ -61,11 +68,12 @@ python briefing.py "Análisis del sector tech"
 | `STOP_LOSS_PCT` | `0.02` | Stop loss (2%) |
 | `TAKE_PROFIT_PCT` | `0.04` | Take profit (4%) |
 | `MAX_DAILY_LOSS` | `500` | Pérdida diaria máxima (USD) |
-| `PERPLEXITY_API_KEY` | — | API key de Perplexity (opcional) |
-| `ANTHROPIC_API_KEY` | — | API key de Anthropic (opcional) |
+| `PERPLEXITY_API_KEY` | — | API key de Perplexity (opcional, para briefing) |
+| `ANTHROPIC_API_KEY` | — | API key de Anthropic (opcional, para briefing) |
 
 ## Estrategia
 
 - **SMA Crossover**: SMA(10) cruza SMA(30) → señal de compra/venta
-- **Filtro RSI(14)**: Evita compras en sobrecompra (>70) y ventas en sobreventa (<30)
+- **Filtro RSI(14)**: Compra adicional en sobreventa (<30), venta en sobrecompra (>70)
 - **Risk management**: Límites por posición, portafolio y pérdida diaria
+- **Stop-loss / Take-profit**: 2% SL, 4% TP automáticos por operación

@@ -64,6 +64,9 @@ def evaluate(bars) -> str:
     if sma_cross_up and rsi_val < RSI_OVERBOUGHT:
         logger.info("Señal BUY — SMA cruce alcista, RSI=%.1f", rsi_val)
         return "BUY"
+    elif rsi_val < RSI_OVERSOLD and not sma_cross_down:
+        logger.info("Señal BUY — RSI=%.1f en sobreventa", rsi_val)
+        return "BUY"
     elif sma_cross_down or rsi_val > RSI_OVERBOUGHT:
         logger.info("Señal SELL — SMA cruce bajista o RSI=%.1f sobrecomprado", rsi_val)
         return "SELL"
