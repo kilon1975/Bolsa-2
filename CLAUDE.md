@@ -1,26 +1,33 @@
-# Instrucciones para Claude — Proyecto Bolsa-2 (Bot IBKR)
+# CLAUDE.md
 
-## REGLA PRINCIPAL
+## Proyecto
+Este repositorio contiene un bot de trading para Interactive Brokers hecho para dinero propio.
 
-Este es un proyecto de trading con dinero real. Claude **NUNCA** debe:
-- Modificar parámetros de riesgo (`config.py`) sin aprobación explícita del dueño
-- Cambiar valores de `STOP_LOSS_PCT`, `TAKE_PROFIT_PCT`, `MAX_DAILY_LOSS` o `MAX_POSITION_SIZE`
-- Añadir lógica que ejecute órdenes automáticamente sin validación del RiskManager
-- Desactivar, reducir o eludir controles de riesgo en `risk.py`
-- Tomar decisiones de inversión, recomendar compras/ventas, ni modificar la estrategia de trading sin revisión humana
-- Cambiar el puerto de TWS de paper (7497) a live (7496)
+## Límites
+- Nunca automatizar trading real sin revisión humana.
+- Nunca agregar código que envíe órdenes reales por defecto.
+- Priorizar paper trading, simulación y revisión manual.
+- No tocar secretos, tokens, claves o credenciales.
+- No imprimir secretos en logs, comentarios o artifacts.
+- No modificar reglas de riesgo sin explicarlo claramente.
+- No fusionar cambios a main sin revisión humana.
 
-## Qué SÍ puede hacer Claude
+## Qué sí puede hacer Claude
+- Mejorar código Python.
+- Corregir errores.
+- Mejorar README y documentación.
+- Agregar tests.
+- Proponer mejoras de estructura.
+- Revisar pull requests.
+- Ayudar con GitHub Actions seguras.
 
-- Corregir bugs en el código
-- Mejorar la calidad del código (refactoring, tipos, tests)
-- Revisar pull requests buscando errores lógicos o de seguridad
-- Añadir tests unitarios
-- Mejorar documentación y README
-- Sugerir mejoras a la estrategia (pero NO implementarlas sin aprobación)
-- Responder preguntas sobre la arquitectura del proyecto
+## Qué debe cuidar
+- Cambios pequeños y fáciles de revisar.
+- Explicar el objetivo del cambio.
+- Señalar riesgos si toca sizing, stop loss, target, ejecución o conexión con broker.
+- Mantener el proyecto simple para un usuario principiante.
 
-## Arquitectura del proyecto
+## Arquitectura
 
 ```
 main.py          → Punto de entrada unificado
@@ -33,19 +40,10 @@ risk.py          → Control de riesgo (ARCHIVO CRÍTICO)
 briefing.py      → Pipeline Perplexity → Claude → briefing
 ```
 
-## Reglas de código
-
-- Python 3.11+
-- Logging con `logging` estándar (no print en módulos)
-- Configuración siempre via `config.py` (nunca hardcodeada)
-- Toda orden debe pasar por `RiskManager.check_order()` antes de ejecutarse
-- Los cambios en `risk.py`, `orders.py` y `config.py` requieren revisión humana obligatoria
-- Commits en español
-
 ## Archivos críticos (requieren revisión humana)
-
 - `risk.py` — control de riesgo
 - `orders.py` — ejecución de órdenes
 - `config.py` — parámetros del bot
 - `bot.py` — ciclo principal de trading
-- `.github/workflows/claude.yml` — permisos de CI/CD
+- `.env` / `.env.example` — credenciales
+- `.github/workflows/` — permisos de CI/CD
